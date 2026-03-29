@@ -1,0 +1,16 @@
+﻿Budgify - 2. Hafta İlerleme Raporu
+
+
+Video:
+https://drive.google.com/file/d/1EPF3bfz7rC-_1ntxH7KtLYX5graZY0RW/view?usp=sharing
+
+
+2. Hafta Yapılanlar
+1. Katmanlı Mimari ve Backend Yapılandırması: Projenin sürdürülebilirliği için Spring Boot üzerinde katmanlı mimariyi (Entity, Repository, Service, Controller) kurguladım.
+2. JPA ve Entity Modelleme: Veri tabanı şemasını yansıtacak olan User, Budget, Transaction ve Category Entity sınıflarını oluşturdum. Hibernate notasyonlarını kullanarak tablolar arası ManyToOne ve OneToMany ilişkilerini tanımladım.
+3. DTO Yönetimi: Güvenlik ve veri gizliliği standartları gereği, veri tabanı nesnelerini doğrudan dışarı açmak yerine DTO yapısını entegre ettim. CreateRequest ve Response modelleriyle istemciye gönderilecek veriyi filtreleyerek mimari bir koruma katmanı sağladım.
+4. Service Katmanı ve Manual Mapping: İş mantığının kalbi olan UserService yapısını kurdum. Veri dönüşümlerinde tam kontrol sağlamak adına "Manual Mapping" yöntemini tercih ettim; gelen ham verileri işleyip Entity'ye dönüştüren ve Stream API kullanarak verileri listeleyen metodolojileri geliştirdim.
+5. PostgreSQL Entegrasyonu ve Canlı Bağlantı: Uygulamayı yerel bir PostgreSQL sunucusuna bağladım. application.properties üzerinden yapılan konfigürasyonla, Hibernate'in otomatik tablo oluşturma (ddl-auto) özelliğini kullanarak Java sınıflarımın veri tabanında gerçek tablolara ve ilişkilere dönüşmesini sağladım.
+Yapay Zeka Kullanımı (Gemini) 
+* Port Çatışmaları ve DB Debugging: MacOS üzerinde çalışan hayalet PostgreSQL süreçlerini tespit edip port çatışmalarını çözme konusunda teknik destek aldım.
+* Mimari Danışmanlık: Entity-DTO dönüşümlerinde en temiz mapping yöntemleri ve Spring Security'nin başlangıç konfigürasyonları üzerine fikir alışverişinde bulundum.
