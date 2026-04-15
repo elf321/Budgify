@@ -1,35 +1,21 @@
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
-import OverviewScreen from './src/screens/OverviewScreen';
-import HistoryScreen from './src/screens/HistoryScreen';
-import AddTransactionScreen from './src/screens/AddTransactionScreen';
-import BudgetScreen from './src/screens/BudgetScreen';
-import Footer from './src/components/Footer';
-type TabType = 'Overview' | 'History' | 'Add' | 'Budget';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
+import MainTabNavigator from './src/navigations/MainTabNavigator';
+
+
+const Stack = createStackNavigator();
 
 export default function App() {
-    const [activeTab, setActiveTab] = useState('Overview');
-
-    const renderScreen = () => {
-        switch (activeTab) {
-            case 'Overview': return <OverviewScreen />;
-            case 'History': return <HistoryScreen />;
-            case 'Add': return <AddTransactionScreen />;
-            case 'Budget': return <BudgetScreen />;
-            default: return <OverviewScreen />;
-        }
-    };
-
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={{ flex: 1 }}>
-                {renderScreen()}
-            </View>
-            <Footer activeTab={activeTab} setActiveTab={setActiveTab} />
-        </SafeAreaView>
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Register" component={RegisterScreen} />
+                <Stack.Screen name="Main" component={MainTabNavigator} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff' },
-});
