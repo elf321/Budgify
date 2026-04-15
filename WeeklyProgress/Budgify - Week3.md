@@ -1,6 +1,8 @@
 3.Hafta Video :
 https://drive.google.com/file/d/1Xg2ZsuLjiFWYmsm8QkKKqkH3aDRwBGeX/view?usp=sharing
 
+Backend Repository: https://github.com/elf321/Budgify-Api
+
 3. Hafta Yapılanlar
 
 -Authentication Altyapısı: Kullanıcı kayıt (Register) ve giriş (Login) süreçlerini hem Backend hem de Frontend taraflarında tam entegre bir şekilde tamamladım.
