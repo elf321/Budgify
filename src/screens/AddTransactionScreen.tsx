@@ -1,99 +1,104 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    View, Text, TextInput, TouchableOpacity, 
-    StyleSheet, SafeAreaView, ScrollView, Alert 
+import {
+    View, Text, TextInput, TouchableOpacity,
+    StyleSheet, SafeAreaView, ScrollView, Alert
 } from 'react-native';
-import { getAllCategories } from '../services/categoryService';
+import { getCategoriesByType } from '../services/categoryService';
 import { createTransaction } from '../services/transactionService';
-import { Category } from '../types';
+import { Category, Transaction } from '../types';
 
-type AddTransactionScreenProps = {
-    onSaved?: () => void;
-};
-
-const AddTransactionScreen = ({ onSaved }: AddTransactionScreenProps) => {
+const AddTransactionScreen = ({ onSaved }: any) => {
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
+    const [type, setType] = useState<'EXPENSE' | 'INCOME'>('EXPENSE');
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const data = await getAllCategories();
+                const data = await getCategoriesByType(type);
                 setCategories(data);
+                setSelectedCategory(null);
             } catch (error) {
+                console.error("Category loading error:", error);
                 Alert.alert("Error", "Categories could not be loaded.");
             }
         };
         fetchCategories();
-    }, []);
+    }, [type]);
 
     const handleSave = async () => {
-        const normalizedAmount = amount.trim().replace(',', '.');
-        const parsedAmount = Number(normalizedAmount);
+        const parsedAmount = Number(amount.replace(',', '.'));
 
-        if (!normalizedAmount || !Number.isFinite(parsedAmount) || parsedAmount <= 0 || !selectedCategory) {
-            Alert.alert("Warning", "Please select the amount and category.");
+        if (!parsedAmount || parsedAmount <= 0 || !selectedCategory) {
+            Alert.alert("Warning", "Please enter a valid amount and select a category.");
             return;
         }
 
         const transactionData = {
-            description: description || "No description",
+            description: description || (type === 'INCOME' ? "Income" : "Expense"),
             amount: parsedAmount,
             categoryId: selectedCategory.id,
-            userId: 1 
+            userId: 1,
+            financeType: type
         };
 
         try {
-            const created = await createTransaction(transactionData);
-            if (!created || !created.id) {
-                throw new Error("Transaction could not be created.");
-            }
+            await createTransaction(transactionData);
             setAmount('');
             setDescription('');
-            setSelectedCategory(null);
-            Alert.alert("Success", "Transaction saved successfully!", [
-                { text: "OK", onPress: () => onSaved?.() }
-            ]);
+            Alert.alert("Success", "Transaction saved successfully.");
+            onSaved?.();
         } catch (error) {
-            const message = error instanceof Error ? error.message : "An error occurred while saving the transaction.";
-            Alert.alert("Error", message);
+            Alert.alert("Error", "Transaction could not be saved.");
         }
     };
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Add Transaction</Text>
+                <Text style={styles.title}>New Transaction</Text>
+                <View style={styles.typeSelector}>
+                    <TouchableOpacity
+                        style={[styles.typeButton, type === 'EXPENSE' && styles.expenseActive]}
+                        onPress={() => setType('EXPENSE')}
+                    >
+                        <Text style={[styles.typeText, type === 'EXPENSE' && styles.activeText]}>Expense</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.typeButton, type === 'INCOME' && styles.incomeActive]}
+                        onPress={() => setType('INCOME')}
+                    >
+                        <Text style={[styles.typeText, type === 'INCOME' && styles.activeText]}>Income</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <View style={styles.form}>
                 <TextInput
-                    style={styles.amountInput}
+                    style={[styles.amountInput, { color: type === 'EXPENSE' ? '#000000' : '#000000' }]}
                     placeholder="0.00"
-                    placeholderTextColor="#9CA3AF"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={amount}
                     onChangeText={setAmount}
                 />
 
                 <TextInput
                     style={styles.descriptionInput}
-                    placeholder="Where did you spend? (e.g: Migros)"
-                    placeholderTextColor="#9CA3AF"
+                    placeholder={type === 'EXPENSE' ? "Expense Statement" : "Income Statement"}
                     value={description}
                     onChangeText={setDescription}
                 />
 
-                <Text style={styles.label}>Choose category</Text>
+                <Text style={styles.label}>Select category</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryList}>
                     {categories.map((cat) => (
-                        <TouchableOpacity 
-                            key={cat.id} 
+                        <TouchableOpacity
+                            key={cat.id}
                             style={[
-                                styles.categoryItem, 
-                                selectedCategory?.id === cat.id && { borderColor: cat.color, borderWidth: 2 }
+                                styles.categoryItem,
+                                selectedCategory?.id === cat.id && { backgroundColor: cat.color + '20', borderColor: cat.color, borderWidth: 1.5 }
                             ]}
                             onPress={() => setSelectedCategory(cat)}
                         >
@@ -102,7 +107,10 @@ const AddTransactionScreen = ({ onSaved }: AddTransactionScreenProps) => {
                     ))}
                 </ScrollView>
 
-                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                <TouchableOpacity
+                    style={[styles.saveButton, { backgroundColor: type === 'EXPENSE' ? '#000' : '#000000' }]}
+                    onPress={handleSave}
+                >
                     <Text style={styles.saveButtonText}>Save</Text>
                 </TouchableOpacity>
             </View>
@@ -112,24 +120,22 @@ const AddTransactionScreen = ({ onSaved }: AddTransactionScreenProps) => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#FFF' },
-    header: { padding: 24, paddingTop: 40 },
-    title: { fontSize: 28, fontWeight: 'bold', color: '#000' },
+    header: { padding: 24, paddingTop: 20 },
+    title: { fontSize: 24, fontWeight: 'bold', color: '#000', marginBottom: 20 },
+    typeSelector: { flexDirection: 'row', backgroundColor: '#F3F4F6', borderRadius: 12, padding: 4 },
+    typeButton: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
+    typeText: { fontWeight: '600', color: '#6B7280' },
+    activeText: { color: '#FFF' },
+    expenseActive: { backgroundColor: '#FF3B30' },
+    incomeActive: { backgroundColor: '#34C759' },
     form: { padding: 24 },
-    amountInput: { fontSize: 48, fontWeight: 'bold', color: '#000', marginBottom: 20 },
-    descriptionInput: { fontSize: 18, borderBottomWidth: 1, borderBottomColor: '#E5E7EB', paddingVertical: 12, marginBottom: 30 },
-    label: { fontSize: 16, fontWeight: '600', color: '#9CA3AF', marginBottom: 12 },
+    amountInput: { fontSize: 54, fontWeight: '800', textAlign: 'center', marginBottom: 20 },
+    descriptionInput: { fontSize: 18, borderBottomWidth: 1, borderBottomColor: '#E5E7EB', paddingVertical: 15, marginBottom: 30 },
+    label: { fontSize: 14, fontWeight: '700', color: '#9CA3AF', marginBottom: 15, textTransform: 'uppercase' },
     categoryList: { flexDirection: 'row', marginBottom: 40 },
-    categoryItem: { 
-        paddingHorizontal: 20, 
-        paddingVertical: 10, 
-        borderRadius: 20, 
-        backgroundColor: '#F3F4F6', 
-        marginRight: 10,
-        height: 45,
-        justifyContent: 'center'
-    },
-    categoryText: { fontWeight: '600' },
-    saveButton: { backgroundColor: '#000', height: 56, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
+    categoryItem: { paddingHorizontal: 20, paddingVertical: 12, borderRadius: 15, backgroundColor: '#F9FAFB', marginRight: 10, justifyContent: 'center' },
+    categoryText: { fontWeight: '700' },
+    saveButton: { height: 60, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowOpacity: 0.2, shadowRadius: 10, elevation: 5 },
     saveButtonText: { color: '#FFF', fontSize: 18, fontWeight: 'bold' }
 });
 

@@ -1,13 +1,7 @@
 import { apiClient } from './apiClient';
+import { Category } from '../types';
 
-export async function getAllCategories() {
-    try {
-        const response = await apiClient.get('/categories');
-        if (Array.isArray(response)) return response;
-        if (response && Array.isArray((response as any).data)) return (response as any).data;
-        return [];
-    } catch (error) {
-        console.error("An error occurred while loading the categories:", error);
-        throw error;
-    }
+export async function getCategoriesByType(type: 'INCOME' | 'EXPENSE'): Promise<Category[]> {
+    const response = await apiClient.get(`/categories/type/${type}`);
+    return response as Category[];
 }

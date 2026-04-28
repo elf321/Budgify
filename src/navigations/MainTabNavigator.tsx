@@ -3,7 +3,7 @@ import { View, SafeAreaView } from 'react-native';
 import OverviewScreen from '../screens/OverviewScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import AddTransactionScreen from '../screens/AddTransactionScreen';
-import BudgetScreen from '../screens/BudgetScreen';
+import BudgetScreen from '../screens/budget/BudgetScreen';
 import Footer from '../components/Footer';
 
 type MainTabNavigatorProps = {
@@ -18,14 +18,14 @@ const MainTabNavigator = ({ navigation }: MainTabNavigatorProps) => {
             case 'Overview': return <OverviewScreen />;
             case 'History': return <HistoryScreen />;
             case 'Add': return <AddTransactionScreen />;
-            case 'Budget': return <BudgetScreen />;
+            case 'Budget': return <BudgetScreen userId={1} />;
             default: return <OverviewScreen />;
         }
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-            <View style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+            <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
                 {renderScreen()}
             </View>
             <Footer
