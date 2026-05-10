@@ -1,6 +1,7 @@
 Budgify - 5. Hafta İlerleme Raporu
 
 Backend Repository: https://github.com/elf321/Budgify-Api
+5.Hafta Videosu: https://drive.google.com/file/d/1i73CXOQ806F453cXSiyh_XuJp1mAFwQp/view?usp=share_link
 
 Cüzdan Tasarımı (My Wallet): Uygulamanın ana ekranı olan "My Wallet" bölümünü tamamladım. 
 Bu ekranda toplam bakiye, aylık harcama limiti analizi ve gelir/gider özet kartlarını kullanıcıya sunan bir dashboard yapısı kurdum.
