@@ -36,3 +36,16 @@ export interface User {
     email: string;
     fullName: string;
 }
+
+export interface CategorySummary {
+    name: string;
+    totalAmount: number;
+    color: string;
+}
+
+export interface Overview {
+    totalBalance: number;
+    monthlyIncome: number;
+    monthlyExpenses: number;
+    categoryBreakdown: CategorySummary[];
+}

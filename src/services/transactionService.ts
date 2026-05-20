@@ -8,5 +8,11 @@ export async function createTransaction(input: any) {
 
 export async function getUserTransactions(userId: number): Promise<Transaction[]> {
     const response = await apiClient.get(`/transactions/user/${userId}`);
-    return response;
+    if (!Array.isArray(response)) {
+        return [];
+    }
+    return response.map((item) => ({
+        ...item,
+        amount: Number(item.amount) || 0,
+    }));
 }

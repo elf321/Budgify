@@ -15,7 +15,12 @@ const MainTabNavigator = ({ navigation }: MainTabNavigatorProps) => {
 
     const renderScreen = () => {
         switch (activeTab) {
-            case 'Overview': return <OverviewScreen />;
+            case 'Overview': return (
+                <OverviewScreen
+                    userId={1}
+                    onSeeAllHistory={() => setActiveTab('History')}
+                />
+            );
             case 'History': return <HistoryScreen />;
             case 'Add': return <AddTransactionScreen />;
             case 'Budget': return <BudgetScreen userId={1} />;
