@@ -29,10 +29,10 @@ const formatAmount = (value: number) =>
 
 type OverviewScreenProps = {
     userId?: number;
-    onSeeAllHistory?: () => void;
+    onSeeAllTargets?: () => void;
 };
 
-const OverviewScreen = ({ userId = 1, onSeeAllHistory }: OverviewScreenProps) => {
+const OverviewScreen = ({ userId = 1, onSeeAllTargets }: OverviewScreenProps) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [period, setPeriod] = useState<Period>('month');
     const [loading, setLoading] = useState(true);
@@ -187,7 +187,7 @@ const OverviewScreen = ({ userId = 1, onSeeAllHistory }: OverviewScreenProps) =>
 
             <RecentTransactionsList
                 transactions={recentTransactions}
-                onSeeAll={onSeeAllHistory}
+                onSeeAll={onSeeAllTargets}
             />
         </ScrollView>
     );

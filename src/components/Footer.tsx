@@ -11,7 +11,7 @@ interface FooterProps {
 const Footer = ({ activeTab, setActiveTab, onLogout }: FooterProps) => {
     const tabs = [
         { id: 'Overview', label: 'Overview', icon: 'grid-outline' },
-        { id: 'History', label: 'History', icon: 'time-outline' },
+        { id: 'Target', label: 'Target', icon: 'flag-outline' },
         { id: 'Add', label: 'Add', icon: 'add-circle-outline' },
         { id: 'Budget', label: 'Budget', icon: 'wallet-outline' },
         { id: 'Logout', label: 'Logout', icon: 'log-out-outline' },

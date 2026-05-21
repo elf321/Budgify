@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, SafeAreaView } from 'react-native';
 import OverviewScreen from '../screens/OverviewScreen';
-import HistoryScreen from '../screens/HistoryScreen';
+import TargetScreen from '../screens/TargetScreen';
 import AddTransactionScreen from '../screens/AddTransactionScreen';
 import BudgetScreen from '../screens/budget/BudgetScreen';
 import Footer from '../components/Footer';
@@ -18,10 +18,10 @@ const MainTabNavigator = ({ navigation }: MainTabNavigatorProps) => {
             case 'Overview': return (
                 <OverviewScreen
                     userId={1}
-                    onSeeAllHistory={() => setActiveTab('History')}
+                    onSeeAllTargets={() => setActiveTab('Target')}
                 />
             );
-            case 'History': return <HistoryScreen />;
+            case 'Target': return <TargetScreen userId={1} />;
             case 'Add': return <AddTransactionScreen />;
             case 'Budget': return <BudgetScreen userId={1} />;
             default: return <OverviewScreen />;

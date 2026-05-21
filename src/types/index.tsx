@@ -49,3 +49,23 @@ export interface Overview {
     monthlyExpenses: number;
     categoryBreakdown: CategorySummary[];
 }
+
+export type TargetType = 'GENERAL' | 'CATEGORY';
+
+export interface TargetStatus {
+    id: number;
+    targetType: TargetType;
+    categoryName: string | null;
+    categoryColor: string | null;
+    targetAmount: number;
+    currentSpent: number;
+    remainingAmount: number;
+    progressPercentage: number;
+}
+
+export interface CreateTargetInput {
+    targetType: TargetType;
+    categoryName?: string;
+    categoryColor?: string;
+    targetAmount: number;
+}

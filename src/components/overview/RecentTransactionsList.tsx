@@ -24,7 +24,7 @@ const RecentTransactionsList = ({ transactions, onSeeAll }: RecentTransactionsLi
             <Text style={styles.title}>Recent Transactions</Text>
             {onSeeAll ? (
                 <TouchableOpacity onPress={onSeeAll} style={styles.seeAllBtn}>
-                    <Text style={styles.seeAllText}>See all</Text>
+                    <Text style={styles.seeAllText}>Targets</Text>
                     <Ionicons name="chevron-forward" size={16} color="#007AFF" />
                 </TouchableOpacity>
             ) : null}
