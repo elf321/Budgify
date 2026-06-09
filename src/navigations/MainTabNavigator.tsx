@@ -5,6 +5,7 @@ import TargetScreen from '../screens/TargetScreen';
 import AddTransactionScreen from '../screens/AddTransactionScreen';
 import BudgetScreen from '../screens/budget/BudgetScreen';
 import Footer from '../components/Footer';
+import { useAuth } from '../context/AuthContext';
 
 type MainTabNavigatorProps = {
     navigation: { replace: (screen: string) => void };
@@ -12,19 +13,25 @@ type MainTabNavigatorProps = {
 
 const MainTabNavigator = ({ navigation }: MainTabNavigatorProps) => {
     const [activeTab, setActiveTab] = useState('Overview');
+    const { userId, logout } = useAuth();
+
+    if (!userId) {
+        navigation.replace('Login');
+        return null;
+    }
 
     const renderScreen = () => {
         switch (activeTab) {
             case 'Overview': return (
                 <OverviewScreen
-                    userId={1}
+                    userId={userId}
                     onSeeAllTargets={() => setActiveTab('Target')}
                 />
             );
-            case 'Target': return <TargetScreen userId={1} />;
-            case 'Add': return <AddTransactionScreen />;
-            case 'Budget': return <BudgetScreen userId={1} />;
-            default: return <OverviewScreen />;
+            case 'Target': return <TargetScreen userId={userId} />;
+            case 'Add': return <AddTransactionScreen userId={userId} />;
+            case 'Budget': return <BudgetScreen userId={userId} />;
+            default: return <OverviewScreen userId={userId} />;
         }
     };
 
@@ -36,7 +43,10 @@ const MainTabNavigator = ({ navigation }: MainTabNavigatorProps) => {
             <Footer
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
-                onLogout={() => navigation.replace('Login')}
+                onLogout={() => {
+                    logout();
+                    navigation.replace('Login');
+                }}
             />
         </SafeAreaView>
     );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Period } from '../../utils/overviewHelpers';
+import { colors } from '../../theme/colors';
 
 type PeriodToggleProps = {
     value: Period;
@@ -31,9 +32,11 @@ const PeriodToggle = ({ value, onChange }: PeriodToggleProps) => (
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        backgroundColor: '#F2F2F7',
+        backgroundColor: colors.surface,
         borderRadius: 14,
         padding: 4,
+        borderWidth: 1,
+        borderColor: colors.border,
     },
     option: {
         flex: 1,
@@ -42,15 +45,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     optionActive: {
-        backgroundColor: '#FFF',
-        shadowColor: '#000',
+        backgroundColor: colors.primarySoft,
+        shadowColor: colors.primary,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.08,
         shadowRadius: 4,
         elevation: 2,
     },
-    optionText: { fontSize: 14, fontWeight: '600', color: '#8E8E93' },
-    optionTextActive: { color: '#1C1C1E', fontWeight: '700' },
+    optionText: { fontSize: 14, fontWeight: '700', color: colors.muted },
+    optionTextActive: { color: colors.primary, fontWeight: '800' },
 });
 
 export default PeriodToggle;

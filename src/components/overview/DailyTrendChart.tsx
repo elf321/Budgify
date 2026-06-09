@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { DailyTrendPoint } from '../../utils/overviewHelpers';
+import { colors } from '../../theme/colors';
 
 type DailyTrendChartProps = {
     data: DailyTrendPoint[];
@@ -24,11 +25,11 @@ const DailyTrendChart = ({ data, periodLabel }: DailyTrendChartProps) => {
 
             <View style={styles.legendRow}>
                 <View style={styles.legendItem}>
-                    <View style={[styles.legendDot, { backgroundColor: '#34C759' }]} />
+                    <View style={[styles.legendDot, { backgroundColor: colors.income }]} />
                     <Text style={styles.legendText}>Income</Text>
                 </View>
                 <View style={styles.legendItem}>
-                    <View style={[styles.legendDot, { backgroundColor: '#FF3B30' }]} />
+                    <View style={[styles.legendDot, { backgroundColor: colors.expense }]} />
                     <Text style={styles.legendText}>Expense</Text>
                 </View>
             </View>
@@ -73,20 +74,20 @@ const DailyTrendChart = ({ data, periodLabel }: DailyTrendChartProps) => {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#FFF',
-        borderRadius: 24,
+        backgroundColor: colors.surface,
+        borderRadius: 22,
         padding: 20,
         marginBottom: 20,
         borderWidth: 1,
-        borderColor: '#F2F2F7',
+        borderColor: colors.border,
     },
     header: { marginBottom: 12 },
-    title: { fontSize: 17, fontWeight: '700', color: '#1C1C1E' },
-    subtitle: { fontSize: 13, color: '#8E8E93', marginTop: 2, fontWeight: '500' },
+    title: { fontSize: 17, fontWeight: '800', color: colors.ink },
+    subtitle: { fontSize: 13, color: colors.muted, marginTop: 2, fontWeight: '600' },
     legendRow: { flexDirection: 'row', marginBottom: 16 },
     legendItem: { flexDirection: 'row', alignItems: 'center', marginRight: 16 },
     legendDot: { width: 8, height: 8, borderRadius: 4, marginRight: 6 },
-    legendText: { fontSize: 12, color: '#8E8E93', fontWeight: '600' },
+    legendText: { fontSize: 12, color: colors.muted, fontWeight: '700' },
     chartArea: {
         flexDirection: 'row',
         alignItems: 'flex-end',
@@ -101,10 +102,10 @@ const styles = StyleSheet.create({
         height: CHART_HEIGHT,
     },
     bar: { width: 8, borderRadius: 4, minHeight: 0, marginHorizontal: 1.5 },
-    incomeBar: { backgroundColor: '#34C759' },
-    expenseBar: { backgroundColor: '#FF3B30' },
-    barLabel: { fontSize: 10, color: '#8E8E93', marginTop: 8, fontWeight: '600' },
-    emptyText: { textAlign: 'center', color: '#8E8E93', paddingVertical: 24, fontWeight: '500' },
+    incomeBar: { backgroundColor: colors.income },
+    expenseBar: { backgroundColor: colors.expense },
+    barLabel: { fontSize: 10, color: colors.muted, marginTop: 8, fontWeight: '700' },
+    emptyText: { textAlign: 'center', color: colors.muted, paddingVertical: 24, fontWeight: '600' },
 });
 
 export default DailyTrendChart;

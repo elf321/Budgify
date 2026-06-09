@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Transaction } from '../../types';
 import { parseTransactionDate } from '../../utils/overviewHelpers';
+import { colors } from '../../theme/colors';
 
 type RecentTransactionsListProps = {
     transactions: Transaction[];
@@ -25,7 +26,7 @@ const RecentTransactionsList = ({ transactions, onSeeAll }: RecentTransactionsLi
             {onSeeAll ? (
                 <TouchableOpacity onPress={onSeeAll} style={styles.seeAllBtn}>
                     <Text style={styles.seeAllText}>Targets</Text>
-                    <Ionicons name="chevron-forward" size={16} color="#007AFF" />
+                    <Ionicons name="chevron-forward" size={16} color={colors.primary} />
                 </TouchableOpacity>
             ) : null}
         </View>
@@ -35,8 +36,12 @@ const RecentTransactionsList = ({ transactions, onSeeAll }: RecentTransactionsLi
         ) : (
             transactions.map((item) => (
                 <View key={item.id} style={styles.row}>
-                    <View style={[styles.icon, { backgroundColor: item.categoryColor + '18' }]}>
-                        <Ionicons name="wallet-outline" size={20} color={item.categoryColor} />
+                    <View style={[styles.icon, { backgroundColor: item.financeType === 'INCOME' ? colors.incomeSoft : colors.expenseSoft }]}>
+                        <Ionicons
+                            name={item.financeType === 'INCOME' ? 'arrow-down' : 'arrow-up'}
+                            size={20}
+                            color={item.financeType === 'INCOME' ? colors.income : colors.expense}
+                        />
                     </View>
                     <View style={styles.info}>
                         <Text style={styles.desc} numberOfLines={1}>{item.description}</Text>
@@ -47,7 +52,7 @@ const RecentTransactionsList = ({ transactions, onSeeAll }: RecentTransactionsLi
                     <Text
                         style={[
                             styles.amount,
-                            { color: item.financeType === 'INCOME' ? '#34C759' : '#FF3B30' },
+                            { color: item.financeType === 'INCOME' ? colors.income : colors.expense },
                         ]}
                     >
                         {formatAmount(item.amount, item.financeType)}
@@ -60,11 +65,11 @@ const RecentTransactionsList = ({ transactions, onSeeAll }: RecentTransactionsLi
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#FFF',
-        borderRadius: 24,
+        backgroundColor: colors.surface,
+        borderRadius: 22,
         padding: 20,
         borderWidth: 1,
-        borderColor: '#F2F2F7',
+        borderColor: colors.border,
     },
     header: {
         flexDirection: 'row',
@@ -72,15 +77,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 16,
     },
-    title: { fontSize: 17, fontWeight: '700', color: '#1C1C1E' },
+    title: { fontSize: 17, fontWeight: '800', color: colors.ink },
     seeAllBtn: { flexDirection: 'row', alignItems: 'center' },
-    seeAllText: { fontSize: 14, color: '#007AFF', fontWeight: '600', marginRight: 2 },
+    seeAllText: { fontSize: 14, color: colors.primary, fontWeight: '700', marginRight: 2 },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 12,
         borderBottomWidth: 1,
-        borderBottomColor: '#F2F2F7',
+        borderBottomColor: colors.border,
     },
     icon: {
         width: 44,
@@ -91,10 +96,10 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     info: { flex: 1, marginRight: 8 },
-    desc: { fontSize: 15, fontWeight: '700', color: '#1C1C1E' },
-    meta: { fontSize: 12, color: '#8E8E93', marginTop: 3, fontWeight: '500' },
+    desc: { fontSize: 15, fontWeight: '800', color: colors.ink },
+    meta: { fontSize: 12, color: colors.muted, marginTop: 3, fontWeight: '600' },
     amount: { fontSize: 14, fontWeight: '800' },
-    emptyText: { color: '#8E8E93', textAlign: 'center', paddingVertical: 20, fontWeight: '500' },
+    emptyText: { color: colors.muted, textAlign: 'center', paddingVertical: 20, fontWeight: '600' },
 });
 
 export default RecentTransactionsList;

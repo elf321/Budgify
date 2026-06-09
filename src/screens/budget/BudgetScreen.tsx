@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getUserTransactions } from '../../services/transactionService';
 import { Transaction } from '../../types';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { colors } from '../../theme/colors';
+import BrandLogo from '../../components/BrandLogo';
 
 const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -35,18 +37,23 @@ const BudgetScreen = ({ userId = 1 }: { userId?: number }) => {
 
     const netBalance = totalIncome - totalExpense;
 
-    // Harcama/Gelir oranı hesaplaması
     const expenseRatio = totalIncome > 0
         ? Math.min((totalExpense / totalIncome) * 100, 100)
         : (totalExpense > 0 ? 100 : 0);
 
-    const renderTransactionItem = ({ item }: { item: Transaction }) => (
+    const remainingRatio = Math.max(0, 100 - expenseRatio);
+
+    const renderTransactionItem = ({ item }: { item: Transaction }) => {
+        const isIncome = item.financeType === 'INCOME';
+        const accent = isIncome ? colors.income : colors.expense;
+
+        return (
         <View style={styles.transactionItem}>
-            <View style={[styles.transactionIcon, { backgroundColor: item.categoryColor + '15' }]}>
+            <View style={[styles.transactionIcon, { backgroundColor: isIncome ? colors.incomeSoft : colors.expenseSoft }]}>
                 <Ionicons
-                    name={ 'wallet-outline'}
-                    size={22}
-                    color={item.categoryColor}
+                    name={isIncome ? 'arrow-down' : 'arrow-up'}
+                    size={20}
+                    color={accent}
                 />
             </View>
 
@@ -58,12 +65,13 @@ const BudgetScreen = ({ userId = 1 }: { userId?: number }) => {
             </View>
 
             <View style={{ alignItems: 'flex-end' }}>
-                <Text style={[styles.transactionAmount, { color: item.financeType === 'INCOME' ? '#34C759' : '#FF3B30' }]}>
+                <Text style={[styles.transactionAmount, { color: accent }]}>
                     {item.financeType === 'INCOME' ? '+' : '-'}{item.amount.toLocaleString()} TL
                 </Text>
             </View>
         </View>
     );
+    };
 
     return (
         <View style={styles.container}>
@@ -74,52 +82,58 @@ const BudgetScreen = ({ userId = 1 }: { userId?: number }) => {
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={
                     <View style={styles.headerSection}>
-                        <Text style={styles.title}>My Wallet</Text>
+                        <View style={styles.headerRow}>
+                            <View>
+                                <Text style={styles.eyebrow}>Budgify wallet</Text>
+                                <Text style={styles.title}>My Wallet</Text>
+                            </View>
+                            <BrandLogo size={44} />
+                        </View>
 
                         <View style={styles.mainBalanceCard}>
-                            <Text style={styles.balanceLabel}>Total Balance</Text>
-                            <Text style={styles.balanceAmount}>{netBalance.toLocaleString()} TL</Text>
-
-                            {/* Spending Progress Bar */}
-                            <View style={styles.ratioSection}>
-                                <View style={styles.ratioTextRow}>
-                                    <Text style={styles.ratioLabelText}>Monthly Spending</Text>
-                                    <Text style={styles.ratioValueText}>{expenseRatio.toFixed(0)}% of income</Text>
-                                </View>
-                                <View style={styles.progressBarBackground}>
-                                    <View style={[
-                                        styles.progressBarForeground,
-                                        {
-                                            width: `${expenseRatio}%`,
-                                            backgroundColor: expenseRatio > 90 ? '#FF3B30' : '#34C759'
-                                        }
-                                    ]} />
-                                </View>
+                            <View>
+                                <Text style={styles.balanceLabel}>Total Balance</Text>
+                                <Text style={styles.balanceAmount}>{netBalance.toLocaleString()} TL</Text>
                             </View>
 
                             <View style={styles.statsRow}>
                                 <View style={styles.statBox}>
-                                    <View style={styles.iconCircle}>
-                                        <Ionicons name="arrow-down" size={16} color="#34C759" />
+                                    <View style={[styles.iconCircle, { backgroundColor: colors.incomeSoft }]}>
+                                        <Ionicons name="arrow-down" size={16} color={colors.income} />
                                     </View>
-                                    <View style={{ marginLeft: 10 }}>
+                                    <View>
                                         <Text style={styles.statLabel}>Income</Text>
                                         <Text style={styles.incomeValue}>+{totalIncome.toLocaleString()} TL</Text>
                                     </View>
                                 </View>
 
-                                <View style={styles.verticalDivider} />
-
                                 <View style={styles.statBox}>
-                                    <View style={[styles.iconCircle, { backgroundColor: '#FF3B3020' }]}>
-                                        <Ionicons name="arrow-up" size={16} color="#FF3B30" />
+                                    <View style={[styles.iconCircle, { backgroundColor: colors.expenseSoft }]}>
+                                        <Ionicons name="arrow-up" size={16} color={colors.expense} />
                                     </View>
-                                    <View style={{ marginLeft: 10 }}>
+                                    <View>
                                         <Text style={styles.statLabel}>Expense</Text>
                                         <Text style={styles.expenseValue}>-{totalExpense.toLocaleString()} TL</Text>
                                     </View>
                                 </View>
                             </View>
+                        </View>
+
+                        <View style={styles.spendingCard}>
+                            <View style={styles.ratioTextRow}>
+                                <Text style={styles.ratioLabelText}>Monthly Spending</Text>
+                                <Text style={styles.ratioValueText}>{expenseRatio.toFixed(0)}% used</Text>
+                            </View>
+                            <View style={styles.progressBarBackground}>
+                                <View style={[
+                                    styles.progressBarForeground,
+                                    {
+                                        width: `${expenseRatio}%`,
+                                        backgroundColor: expenseRatio > 90 ? colors.expense : colors.primary
+                                    }
+                                ]} />
+                            </View>
+                            <Text style={styles.remainingText}>{remainingRatio.toFixed(0)}% of income still available</Text>
                         </View>
 
                         <Text style={styles.sectionTitle}>Recent Transactions</Text>
@@ -135,70 +149,84 @@ const BudgetScreen = ({ userId = 1 }: { userId?: number }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FDFDFD' },
-    headerSection: { paddingTop: 60, marginBottom: 10 },
-    title: { fontSize: 32, fontWeight: '800', color: '#1C1C1E', marginBottom: 25 },
-
-    mainBalanceCard: {
-        backgroundColor: '#1A1F2B', // İstediğin Charcoal Blue tonu
-        borderRadius: 32,
-        padding: 28,
-        marginBottom: 35,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.3,
-        shadowRadius: 20,
-        elevation: 10
+    container: { flex: 1, backgroundColor: colors.background },
+    headerSection: { paddingTop: 56, marginBottom: 10 },
+    headerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 14,
+        marginBottom: 22,
     },
-    balanceLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 15, fontWeight: '600', letterSpacing: 0.5 },
-    balanceAmount: { color: '#FFF', fontSize: 42, fontWeight: '800', marginVertical: 8 },
-
-    // Ratio Section Styles
-    ratioSection: { marginTop: 15, marginBottom: 5 },
+    eyebrow: { color: colors.primary, fontSize: 13, fontWeight: '800', marginBottom: 6 },
+    title: { fontSize: 32, fontWeight: '800', color: colors.ink },
+    mainBalanceCard: {
+        backgroundColor: colors.surface,
+        borderRadius: 26,
+        padding: 22,
+        marginBottom: 14,
+        borderWidth: 1,
+        borderColor: colors.border,
+        shadowColor: colors.primary,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.08,
+        shadowRadius: 18,
+        elevation: 3
+    },
+    balanceLabel: { color: colors.muted, fontSize: 14, fontWeight: '700' },
+    balanceAmount: { color: colors.ink, fontSize: 40, fontWeight: '800', marginTop: 6 },
+    spendingCard: {
+        backgroundColor: colors.primarySoft,
+        borderRadius: 20,
+        padding: 16,
+        marginBottom: 28,
+    },
     ratioTextRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8, alignItems: 'flex-end' },
-    ratioLabelText: { color: 'rgba(255,255,255,0.4)', fontSize: 12, fontWeight: '600' },
-    ratioValueText: { color: '#FFF', fontSize: 12, fontWeight: '700' },
-    progressBarBackground: { height: 6, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 3, overflow: 'hidden' },
-    progressBarForeground: { height: '100%', borderRadius: 3 },
-
+    ratioLabelText: { color: colors.ink, fontSize: 13, fontWeight: '700' },
+    ratioValueText: { color: colors.primary, fontSize: 13, fontWeight: '800' },
+    progressBarBackground: { height: 8, backgroundColor: 'rgba(255,255,255,0.65)', borderRadius: 4, overflow: 'hidden' },
+    progressBarForeground: { height: '100%', borderRadius: 4 },
+    remainingText: { color: colors.muted, fontSize: 12, fontWeight: '600', marginTop: 8 },
     statsRow: {
         flexDirection: 'row',
         alignItems: 'center',
+        gap: 12,
         marginTop: 20,
-        paddingTop: 20,
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255,255,255,0.1)'
     },
-    statBox: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-    iconCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#34C75920', justifyContent: 'center', alignItems: 'center' },
-    statLabel: { color: 'rgba(255,255,255,0.4)', fontSize: 12, fontWeight: '600' },
-    incomeValue: { color: '#34C759', fontSize: 14, fontWeight: '700' },
-    expenseValue: { color: '#FF3B30', fontSize: 14, fontWeight: '700' },
-    verticalDivider: { width: 1, height: 35, backgroundColor: 'rgba(255,255,255,0.1)', marginHorizontal: 15 },
-
-    sectionTitle: { fontSize: 20, fontWeight: '700', color: '#1C1C1E', marginBottom: 20 },
-
+    statBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        backgroundColor: colors.surfaceSoft,
+        borderRadius: 18,
+        padding: 12,
+        gap: 10,
+    },
+    iconCircle: { width: 34, height: 34, borderRadius: 17, justifyContent: 'center', alignItems: 'center' },
+    statLabel: { color: colors.muted, fontSize: 12, fontWeight: '700' },
+    incomeValue: { color: colors.income, fontSize: 13, fontWeight: '800', marginTop: 2 },
+    expenseValue: { color: colors.expense, fontSize: 13, fontWeight: '800', marginTop: 2 },
+    sectionTitle: { fontSize: 20, fontWeight: '800', color: colors.ink, marginBottom: 16 },
     transactionItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFF',
+        backgroundColor: colors.surface,
         padding: 16,
-        borderRadius: 24,
+        borderRadius: 20,
         marginBottom: 12,
-        shadowColor: "#000",
+        shadowColor: colors.ink,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.03,
-        shadowRadius: 10,
-        elevation: 2,
+        shadowOpacity: 0.04,
+        shadowRadius: 8,
+        elevation: 1,
         borderWidth: 1,
-        borderColor: '#F2F2F7'
+        borderColor: colors.border
     },
-    transactionIcon: { width: 52, height: 52, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginRight: 16 },
-    transactionDesc: { fontSize: 17, fontWeight: '700', color: '#1C1C1E' },
-    transactionSubText: { fontSize: 13, color: '#8E8E93', marginTop: 4, fontWeight: '500' },
-    transactionAmount: { fontSize: 17, fontWeight: '800' },
-
-    emptyText: { textAlign: 'center', color: '#8E8E93', marginTop: 50, fontSize: 16, fontWeight: '500' }
+    transactionIcon: { width: 48, height: 48, borderRadius: 16, justifyContent: 'center', alignItems: 'center', marginRight: 14 },
+    transactionDesc: { fontSize: 16, fontWeight: '800', color: colors.ink },
+    transactionSubText: { fontSize: 13, color: colors.muted, marginTop: 4, fontWeight: '600' },
+    transactionAmount: { fontSize: 16, fontWeight: '800' },
+    emptyText: { textAlign: 'center', color: colors.muted, marginTop: 50, fontSize: 16, fontWeight: '600' }
 });
 
 export default BudgetScreen;

@@ -1,31 +1,24 @@
-const API_URL = "http://localhost:8080/api/users";
+import { apiClient } from './apiClient';
+import { User } from '../types';
 
-export const login = async (email: string, password: string) => {
-    const response = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-    });
-    
-    if (!response.ok) {
-        throw new Error("Login Failed!");
-    }
-    return response.json();
+export type LoginResponse = User | {
+    user?: User;
+    token?: string;
+    accessToken?: string;
 };
 
-export const register = async (userData: any) => {
-    const response = await fetch(`${API_URL}/register`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-    });
+export type RegisterInput = {
+    username: string;
+    email: string;
+    password: string;
+    name?: string;
+    surname?: string;
+};
 
-    if (!response.ok) {
-        throw new Error("Register Failed!");
-    }
-    return response.json();
+export const login = async (email: string, password: string): Promise<LoginResponse> => {
+    return apiClient.post<LoginResponse>('/users/login', { email, password });
+};
+
+export const register = async (userData: RegisterInput): Promise<LoginResponse> => {
+    return apiClient.post<LoginResponse>('/users/register', userData);
 };

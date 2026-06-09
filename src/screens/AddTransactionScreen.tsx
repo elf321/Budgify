@@ -5,9 +5,15 @@ import {
 } from 'react-native';
 import { getCategoriesByType } from '../services/categoryService';
 import { createTransaction } from '../services/transactionService';
-import { Category, Transaction } from '../types';
+import { Category } from '../types';
+import { colors } from '../theme/colors';
 
-const AddTransactionScreen = ({ onSaved }: any) => {
+type AddTransactionScreenProps = {
+    userId: number;
+    onSaved?: () => void;
+};
+
+const AddTransactionScreen = ({ userId, onSaved }: AddTransactionScreenProps) => {
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState<'EXPENSE' | 'INCOME'>('EXPENSE');
@@ -40,7 +46,7 @@ const AddTransactionScreen = ({ onSaved }: any) => {
             description: description || (type === 'INCOME' ? "Income" : "Expense"),
             amount: parsedAmount,
             categoryId: selectedCategory.id,
-            userId: 1,
+            userId,
             financeType: type
         };
 
@@ -64,21 +70,22 @@ const AddTransactionScreen = ({ onSaved }: any) => {
                         style={[styles.typeButton, type === 'EXPENSE' && styles.expenseActive]}
                         onPress={() => setType('EXPENSE')}
                     >
-                        <Text style={[styles.typeText, type === 'EXPENSE' && styles.activeText]}>Expense</Text>
+                    <Text style={[styles.typeText, type === 'EXPENSE' && styles.expenseActiveText]}>Expense</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.typeButton, type === 'INCOME' && styles.incomeActive]}
                         onPress={() => setType('INCOME')}
                     >
-                        <Text style={[styles.typeText, type === 'INCOME' && styles.activeText]}>Income</Text>
+                    <Text style={[styles.typeText, type === 'INCOME' && styles.incomeActiveText]}>Income</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
             <View style={styles.form}>
                 <TextInput
-                    style={[styles.amountInput, { color: type === 'EXPENSE' ? '#000000' : '#000000' }]}
+                    style={styles.amountInput}
                     placeholder="0.00"
+                    placeholderTextColor={colors.muted}
                     keyboardType="decimal-pad"
                     value={amount}
                     onChangeText={setAmount}
@@ -87,6 +94,7 @@ const AddTransactionScreen = ({ onSaved }: any) => {
                 <TextInput
                     style={styles.descriptionInput}
                     placeholder={type === 'EXPENSE' ? "Expense Statement" : "Income Statement"}
+                    placeholderTextColor={colors.muted}
                     value={description}
                     onChangeText={setDescription}
                 />
@@ -108,7 +116,7 @@ const AddTransactionScreen = ({ onSaved }: any) => {
                 </ScrollView>
 
                 <TouchableOpacity
-                    style={[styles.saveButton, { backgroundColor: type === 'EXPENSE' ? '#000' : '#000000' }]}
+                    style={styles.saveButton}
                     onPress={handleSave}
                 >
                     <Text style={styles.saveButtonText}>Save</Text>
@@ -119,24 +127,65 @@ const AddTransactionScreen = ({ onSaved }: any) => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FFF' },
+    container: { flex: 1, backgroundColor: colors.background },
     header: { padding: 24, paddingTop: 20 },
-    title: { fontSize: 24, fontWeight: 'bold', color: '#000', marginBottom: 20 },
-    typeSelector: { flexDirection: 'row', backgroundColor: '#F3F4F6', borderRadius: 12, padding: 4 },
+    title: { fontSize: 26, fontWeight: '800', color: colors.ink, marginBottom: 20 },
+    typeSelector: { flexDirection: 'row', backgroundColor: colors.surface, borderRadius: 16, padding: 5, borderWidth: 1, borderColor: colors.border },
     typeButton: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
-    typeText: { fontWeight: '600', color: '#6B7280' },
-    activeText: { color: '#FFF' },
-    expenseActive: { backgroundColor: '#FF3B30' },
-    incomeActive: { backgroundColor: '#34C759' },
+    typeText: { fontWeight: '800', color: colors.muted },
+    expenseActiveText: { color: colors.expense },
+    incomeActiveText: { color: colors.income },
+    expenseActive: { backgroundColor: colors.expenseSoft },
+    incomeActive: { backgroundColor: colors.incomeSoft },
     form: { padding: 24 },
-    amountInput: { fontSize: 54, fontWeight: '800', textAlign: 'center', marginBottom: 20 },
-    descriptionInput: { fontSize: 18, borderBottomWidth: 1, borderBottomColor: '#E5E7EB', paddingVertical: 15, marginBottom: 30 },
-    label: { fontSize: 14, fontWeight: '700', color: '#9CA3AF', marginBottom: 15, textTransform: 'uppercase' },
+    amountInput: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 24,
+        color: colors.ink,
+        fontSize: 50,
+        fontWeight: '800',
+        textAlign: 'center',
+        marginBottom: 18,
+        paddingVertical: 18,
+    },
+    descriptionInput: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 18,
+        color: colors.ink,
+        fontSize: 17,
+        paddingHorizontal: 16,
+        paddingVertical: 15,
+        marginBottom: 28,
+    },
+    label: { fontSize: 13, fontWeight: '800', color: colors.muted, marginBottom: 15, textTransform: 'uppercase' },
     categoryList: { flexDirection: 'row', marginBottom: 40 },
-    categoryItem: { paddingHorizontal: 20, paddingVertical: 12, borderRadius: 15, backgroundColor: '#F9FAFB', marginRight: 10, justifyContent: 'center' },
+    categoryItem: {
+        paddingHorizontal: 18,
+        paddingVertical: 12,
+        borderRadius: 15,
+        backgroundColor: colors.surface,
+        marginRight: 10,
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
     categoryText: { fontWeight: '700' },
-    saveButton: { height: 60, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowOpacity: 0.2, shadowRadius: 10, elevation: 5 },
-    saveButtonText: { color: '#FFF', fontSize: 18, fontWeight: 'bold' }
+    saveButton: {
+        height: 58,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.primary,
+        shadowColor: colors.primary,
+        shadowOpacity: 0.18,
+        shadowRadius: 12,
+        elevation: 4,
+    },
+    saveButtonText: { color: '#FFF', fontSize: 17, fontWeight: '800' }
 });
 
 export default AddTransactionScreen;

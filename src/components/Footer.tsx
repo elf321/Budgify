@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { colors } from '../theme/colors';
 
 interface FooterProps {
     activeTab: string;
@@ -39,17 +40,22 @@ const Footer = ({ activeTab, setActiveTab, onLogout }: FooterProps) => {
                     style={styles.tab}
                     onPress={() => handlePress(tab.id)}
                 >
-                    <Icon
-                        name={tab.icon}
-                        size={24}
-                        color={
-                            tab.id === 'Logout'
-                                ? '#9CA3AF'
-                                : activeTab === tab.id
-                                  ? '#000'
-                                  : '#9CA3AF'
-                        }
-                    />
+                    <View style={[
+                        styles.iconWrap,
+                        tab.id !== 'Logout' && activeTab === tab.id && styles.activeIconWrap,
+                    ]}>
+                        <Icon
+                            name={tab.icon}
+                            size={23}
+                            color={
+                                tab.id === 'Logout'
+                                    ? colors.muted
+                                    : activeTab === tab.id
+                                      ? colors.primary
+                                      : colors.muted
+                            }
+                        />
+                    </View>
                     <Text style={[
                         styles.tabText,
                         tab.id !== 'Logout' && activeTab === tab.id && styles.activeTabText,
@@ -65,16 +71,24 @@ const Footer = ({ activeTab, setActiveTab, onLogout }: FooterProps) => {
 const styles = StyleSheet.create({
     footer: {
         flexDirection: 'row',
-        height: 80,
+        height: 84,
         borderTopWidth: 1,
-        borderTopColor: '#E5E7EB',
-        backgroundColor: '#FFFFFF',
+        borderTopColor: colors.border,
+        backgroundColor: colors.surface,
         justifyContent: 'space-around',
-        paddingTop: 10,
+        paddingTop: 8,
     },
     tab: { alignItems: 'center', flex: 1 },
-    tabText: { fontSize: 11, color: '#9CA3AF', marginTop: 4, fontWeight: '500' },
-    activeTabText: { color: '#000', fontWeight: 'bold' }
+    iconWrap: {
+        width: 42,
+        height: 32,
+        borderRadius: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    activeIconWrap: { backgroundColor: colors.primarySoft },
+    tabText: { fontSize: 11, color: colors.muted, marginTop: 3, fontWeight: '600' },
+    activeTabText: { color: colors.primary, fontWeight: '800' }
 });
 
 export default Footer;

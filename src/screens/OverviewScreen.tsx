@@ -14,6 +14,8 @@ import PeriodToggle from '../components/overview/PeriodToggle';
 import DailyTrendChart from '../components/overview/DailyTrendChart';
 import DonutChart from '../components/overview/DonutChart';
 import RecentTransactionsList from '../components/overview/RecentTransactionsList';
+import { colors } from '../theme/colors';
+import BrandLogo from '../components/BrandLogo';
 import {
     Period,
     buildCategoryBreakdown,
@@ -100,7 +102,7 @@ const OverviewScreen = ({ userId = 1, onSeeAllTargets }: OverviewScreenProps) =>
     if (loading) {
         return (
             <View style={styles.centered}>
-                <ActivityIndicator size="large" color="#1A1F2B" />
+                <ActivityIndicator size="large" color={colors.primary} />
             </View>
         );
     }
@@ -114,8 +116,14 @@ const OverviewScreen = ({ userId = 1, onSeeAllTargets }: OverviewScreenProps) =>
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
         >
-            <Text style={styles.greeting}>Financial Overview</Text>
-            <Text style={styles.subGreeting}>Your summary at a glance</Text>
+            <View style={styles.headerRow}>
+                <View>
+                    <Text style={styles.eyebrow}>Your monthly picture</Text>
+                    <Text style={styles.greeting}>Financial Overview</Text>
+                    <Text style={styles.subGreeting}>Your summary at a glance</Text>
+                </View>
+                <BrandLogo size={44} />
+            </View>
 
             <View style={styles.toggleWrap}>
                 <PeriodToggle value={period} onChange={setPeriod} />
@@ -134,8 +142,8 @@ const OverviewScreen = ({ userId = 1, onSeeAllTargets }: OverviewScreenProps) =>
 
                 <View style={styles.summaryRow}>
                     <View style={styles.summaryItem}>
-                        <View style={[styles.summaryIcon, { backgroundColor: '#34C75920' }]}>
-                            <Ionicons name="arrow-down" size={18} color="#34C759" />
+                        <View style={[styles.summaryIcon, { backgroundColor: colors.incomeSoft }]}>
+                            <Ionicons name="arrow-down" size={18} color={colors.income} />
                         </View>
                         <View>
                             <Text style={styles.summaryItemLabel}>Total Income</Text>
@@ -146,8 +154,8 @@ const OverviewScreen = ({ userId = 1, onSeeAllTargets }: OverviewScreenProps) =>
                     <View style={styles.summaryDivider} />
 
                     <View style={styles.summaryItem}>
-                        <View style={[styles.summaryIcon, { backgroundColor: '#FF3B3020' }]}>
-                            <Ionicons name="arrow-up" size={18} color="#FF3B30" />
+                        <View style={[styles.summaryIcon, { backgroundColor: colors.expenseSoft }]}>
+                            <Ionicons name="arrow-up" size={18} color={colors.expense} />
                         </View>
                         <View>
                             <Text style={styles.summaryItemLabel}>Total Expense</Text>
@@ -194,47 +202,61 @@ const OverviewScreen = ({ userId = 1, onSeeAllTargets }: OverviewScreenProps) =>
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FDFDFD' },
+    container: { flex: 1, backgroundColor: colors.background },
     content: { paddingHorizontal: 20, paddingTop: 56, paddingBottom: 32 },
-    centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FDFDFD' },
-    greeting: { fontSize: 28, fontWeight: '800', color: '#1C1C1E' },
-    subGreeting: { fontSize: 15, color: '#8E8E93', marginTop: 4, fontWeight: '500' },
+    centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
+    headerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 14,
+    },
+    eyebrow: { color: colors.primary, fontSize: 13, fontWeight: '800', marginBottom: 6 },
+    greeting: { fontSize: 30, fontWeight: '800', color: colors.ink },
+    subGreeting: { fontSize: 15, color: colors.muted, marginTop: 4, fontWeight: '600' },
     toggleWrap: { marginTop: 20, marginBottom: 8 },
     periodLabel: {
         fontSize: 13,
-        color: '#8E8E93',
-        fontWeight: '600',
+        color: colors.muted,
+        fontWeight: '700',
         marginBottom: 20,
         textAlign: 'center',
     },
     errorBox: {
-        backgroundColor: '#FF3B3015',
+        backgroundColor: colors.expenseSoft,
         borderRadius: 12,
         padding: 12,
         marginBottom: 16,
     },
-    errorText: { color: '#FF3B30', fontWeight: '600' },
+    errorText: { color: colors.expense, fontWeight: '700' },
     summaryCard: {
-        backgroundColor: '#1A1F2B',
-        borderRadius: 28,
-        padding: 24,
+        backgroundColor: colors.surface,
+        borderRadius: 26,
+        padding: 22,
         marginBottom: 20,
-        shadowColor: '#000',
+        borderWidth: 1,
+        borderColor: colors.border,
+        shadowColor: colors.primary,
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.2,
-        shadowRadius: 16,
-        elevation: 8,
+        shadowOpacity: 0.08,
+        shadowRadius: 18,
+        elevation: 3,
     },
-    balanceLabel: { color: 'rgba(255,255,255,0.55)', fontSize: 14, fontWeight: '600' },
-    balanceAmount: { color: '#FFF', fontSize: 36, fontWeight: '800', marginVertical: 6 },
+    balanceLabel: { color: colors.muted, fontSize: 14, fontWeight: '700' },
+    balanceAmount: { color: colors.ink, fontSize: 38, fontWeight: '800', marginVertical: 6 },
     summaryRow: {
         flexDirection: 'row',
+        gap: 12,
         marginTop: 16,
-        paddingTop: 16,
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255,255,255,0.12)',
     },
-    summaryItem: { flex: 1, flexDirection: 'row', alignItems: 'center' },
+    summaryItem: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: colors.surfaceSoft,
+        borderRadius: 18,
+        padding: 12,
+    },
     summaryIcon: {
         width: 36,
         height: 36,
@@ -243,24 +265,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginRight: 10,
     },
-    summaryItemLabel: { color: 'rgba(255,255,255,0.45)', fontSize: 11, fontWeight: '600' },
-    incomeValue: { color: '#34C759', fontSize: 13, fontWeight: '700', marginTop: 2 },
-    expenseValue: { color: '#FF3B30', fontSize: 13, fontWeight: '700', marginTop: 2 },
+    summaryItemLabel: { color: colors.muted, fontSize: 11, fontWeight: '700' },
+    incomeValue: { color: colors.income, fontSize: 13, fontWeight: '800', marginTop: 2 },
+    expenseValue: { color: colors.expense, fontSize: 13, fontWeight: '800', marginTop: 2 },
     summaryDivider: {
-        width: 1,
-        backgroundColor: 'rgba(255,255,255,0.12)',
-        marginHorizontal: 12,
+        display: 'none',
     },
-    sectionTitle: { fontSize: 17, fontWeight: '700', color: '#1C1C1E', marginBottom: 12 },
+    sectionTitle: { fontSize: 18, fontWeight: '800', color: colors.ink, marginBottom: 12 },
     donutSection: { marginBottom: 20 },
     donutCard: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFF',
-        borderRadius: 24,
+        backgroundColor: colors.surface,
+        borderRadius: 22,
         padding: 20,
         borderWidth: 1,
-        borderColor: '#F2F2F7',
+        borderColor: colors.border,
     },
     donutChartWrap: { marginRight: 16 },
     legendList: { flex: 1 },
@@ -270,9 +290,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     legendDot: { width: 10, height: 10, borderRadius: 5, marginRight: 8 },
-    legendName: { flex: 1, fontSize: 14, fontWeight: '600', color: '#1C1C1E' },
-    legendPct: { fontSize: 13, fontWeight: '700', color: '#8E8E93' },
-    legendEmpty: { fontSize: 13, color: '#8E8E93', fontWeight: '500' },
+    legendName: { flex: 1, fontSize: 14, fontWeight: '700', color: colors.ink },
+    legendPct: { fontSize: 13, fontWeight: '800', color: colors.muted },
+    legendEmpty: { fontSize: 13, color: colors.muted, fontWeight: '600' },
 });
 
 export default OverviewScreen;

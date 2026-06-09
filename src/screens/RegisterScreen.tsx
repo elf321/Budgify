@@ -4,6 +4,8 @@ import {
     StyleSheet, SafeAreaView, ScrollView, Alert
 } from 'react-native';
 import { register } from '../services/authService';
+import { colors } from '../theme/colors';
+import BrandLogo from '../components/BrandLogo';
 
 const RegisterScreen = ({ navigation }: any) => {
     const [form, setForm] = useState({
@@ -34,6 +36,7 @@ const RegisterScreen = ({ navigation }: any) => {
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.header}>
+                    <BrandLogo size={52} />
                     <Text style={styles.title}>New Account</Text>
                     <Text style={styles.subtitle}>Start managing your budget today.</Text>
                 </View>
@@ -43,13 +46,13 @@ const RegisterScreen = ({ navigation }: any) => {
                         <TextInput
                             style={[styles.input, { flex: 1, marginRight: 10 }]}
                             placeholder="Name"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.muted}
                             onChangeText={(val) => setForm({ ...form, name: val })}
                         />
                         <TextInput
                             style={[styles.input, { flex: 1 }]}
                             placeholder="Surname"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.muted}
                             onChangeText={(val) => setForm({ ...form, surname: val })}
                         />
                     </View>
@@ -57,7 +60,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     <TextInput
                         style={styles.input}
                         placeholder="Username"
-                        placeholderTextColor="#9CA3AF"
+                        placeholderTextColor={colors.muted}
                         onChangeText={(val) => setForm({ ...form, username: val })}
                         autoCapitalize="none"
                     />
@@ -65,7 +68,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     <TextInput
                         style={styles.input}
                         placeholder="Email address"
-                        placeholderTextColor="#9CA3AF"
+                        placeholderTextColor={colors.muted}
                         onChangeText={(val) => setForm({ ...form, email: val })}
                         keyboardType="email-address"
                         autoCapitalize="none"
@@ -74,7 +77,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     <TextInput
                         style={styles.input}
                         placeholder="Password"
-                        placeholderTextColor="#9CA3AF"
+                        placeholderTextColor={colors.muted}
                         secureTextEntry
                         onChangeText={(val) => setForm({ ...form, password: val })}
                     />
@@ -98,33 +101,40 @@ const RegisterScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FFFFFF' },
+    container: { flex: 1, backgroundColor: colors.background },
     scrollContent: { padding: 24, justifyContent: 'center', flexGrow: 1 },
-    header: { marginBottom: 32, marginTop: 20 },
-    title: { fontSize: 32, fontWeight: 'bold', color: '#000' },
-    subtitle: { fontSize: 16, color: '#9CA3AF', marginTop: 8 },
+    header: { marginBottom: 32, marginTop: 20, gap: 16 },
+    title: { fontSize: 32, fontWeight: '800', color: colors.ink },
+    subtitle: { fontSize: 16, color: colors.muted, marginTop: 8, fontWeight: '600' },
     form: { width: '100%' },
     row: { flexDirection: 'row', justifyContent: 'space-between' },
     input: {
         height: 56,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E5E7EB',
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 18,
+        backgroundColor: colors.surface,
+        paddingHorizontal: 16,
         fontSize: 16,
-        color: '#000',
-        marginBottom: 20,
+        color: colors.ink,
+        marginBottom: 14,
     },
     registerButton: {
-        backgroundColor: '#000',
+        backgroundColor: colors.primary,
         height: 56,
-        borderRadius: 12,
+        borderRadius: 18,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,
+        shadowColor: colors.primary,
+        shadowOpacity: 0.18,
+        shadowRadius: 12,
+        elevation: 4,
     },
-    registerButtonText: { color: '#FFF', fontSize: 16, fontWeight: '600' },
+    registerButtonText: { color: '#FFF', fontSize: 16, fontWeight: '800' },
     loginLink: { marginTop: 24, alignItems: 'center', marginBottom: 20 },
-    loginText: { color: '#9CA3AF', fontSize: 14 },
-    loginBold: { color: '#000', fontWeight: 'bold' }
+    loginText: { color: colors.muted, fontSize: 14, fontWeight: '600' },
+    loginBold: { color: colors.primary, fontWeight: '800' }
 });
 
 export default RegisterScreen;
